@@ -66,7 +66,7 @@
 
 // This node settings
 #define VERSION         101    // Version of EEPROM struct
-#define SENSOR_DELAY    6000 // In milliseconds, 10 minutes
+#define SENSOR_DELAY    600000 // In milliseconds, 600000 = 10 minutes
 
 // Constants
 #define REG_LEN         21   // Size of one conf. element
@@ -82,7 +82,7 @@
 #endif
 
 // Radio
-#define NODEID          11   // This is our address 
+#define NODEID          3   // This is our address 
 #define NETWORKID       100  // Do not change, defined on gateway
 #define GATEWAYID       1    // Do not change, gateway address
 #define RADIO_REPEAT    5    // Repeat sending
