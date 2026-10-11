@@ -33,17 +33,17 @@
 
 // Do we have temperature/humidity sensor HTU2XD_SHT2X_SI70XX
 // Comment out if not.
-#define HTU2XD_SHT2X_SI70XX
+//#define HTU2XD_SHT2X_SI70XX
 
 // What is the Hardware Serial port to use for debug messages.
 // Comment out if none.
-#define SERIAL_PORT Serial1
+#define SERIAL_PORT Serial
 
 // Includes
 #include <SPI.h>
 #include <RFM69.h>
 #include <RFM69_ATC.h>
-#if defined(__AVR_ATmega168P__) || defined(__AVR_ATmega328__)
+#if defined(__AVR_ATmega168P__) || defined(__AVR_ATmega328P__)
   #define ATMEGA
   #include "LowPower.h"
   #include <avr/eeprom.h> // Global configuration for in chip EEPROM
@@ -82,7 +82,7 @@
 #endif
 
 // Radio
-#define NODEID          3   // This is our address 
+#define NODEID          11   // This is our address 
 #define NETWORKID       100  // Do not change, defined on gateway
 #define GATEWAYID       1    // Do not change, gateway address
 #define RADIO_REPEAT    5    // Repeat sending
@@ -208,7 +208,7 @@ void sendPing(void){
 /*
  * Process incoming radio data
  */
-void checkRadio(){
+void checkRadio(void){
   uint8_t pos;
 
   // Look for incomming transmissions
@@ -417,14 +417,15 @@ void loop() {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); // Sleep MCU for ~ 8 seconds
     sleepCount++;
   #else
-    STM32BeforeSleep();
-    LowPower.deepSleep(SENSOR_DELAY);
-    STM32AfterSleep();    
+    //STM32BeforeSleep();
+    //LowPower.deepSleep(SENSOR_DELAY);
+    //STM32AfterSleep();    
+    delay(100000);
   #endif  
   
   #ifdef ATMEGA  
     // SLEEP_8S = 8000ms
-    if (sleepCount) >= (SENSOR_DELAY/8000) {
+    if (sleepCount >= SENSOR_DELAY/8000) {
       sleepCount = 0;
   #endif         
   
@@ -455,6 +456,7 @@ void loop() {
 /*
  * STM32 after sleep actions
  */
+#ifndef ATMEGA
 void STM32AfterSleep(){
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();    
@@ -534,3 +536,4 @@ void STM32BeforeSleep(){
 
     pinMode(PC13, INPUT_ANALOG);
  }
+ #endif
